@@ -1,0 +1,39 @@
+# Build artifacts
+bin/
+obj/
+**/bin/
+**/obj/
+
+# VS/VSCode
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# DB / local data
+*.db
+*.db-shm
+*.db-wal
+
+# Publish / dist
+/dist/
+/artifacts/
+
+# Test results
+TestResults/
+
+# Tools local
+/tools/**/bin/
+/tools/**/obj/

@@ -1,0 +1,12 @@
+{
+  "SessionTimeoutMinutes": 10,
+  "MaxFailedAttempts": 5,
+  "LockoutMinutes": 10,
+  "PasswordMinLength": 12,
+  "PasswordMaxAgeDays": 90,
+  "AllowSelfRegistration": true,
+  "RequireUpper": true,
+  "RequireLower": true,
+  "RequireDigit": true,
+  "RequireSymbol": true
+}

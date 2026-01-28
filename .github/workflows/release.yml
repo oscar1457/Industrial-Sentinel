@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Publish + Package
+        shell: pwsh
+        run: |
+          ./scripts/pack.ps1 -Configuration Release -Runtime win-x64 -SelfContained -CreateInstaller
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/IndustrialSentinel-*.zip
+            dist/IndustrialSentinel-Setup-*.exe

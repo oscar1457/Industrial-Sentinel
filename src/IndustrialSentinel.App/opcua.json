@@ -1,0 +1,14 @@
+{
+  "Enabled": false,
+  "EndpointUrl": "opc.tcp://192.168.1.50:4840",
+  "RpmNodeId": "ns=2;s=Machine.RPM",
+  "TemperatureNodeId": "ns=2;s=Machine.Temp",
+  "VibrationNodeId": "ns=2;s=Machine.Vibration",
+  "OperationTimeoutMs": 2000,
+  "SessionTimeoutMs": 60000,
+  "KeepAliveIntervalMs": 10000,
+  "ReconnectBaseDelayMs": 1000,
+  "ReconnectMaxDelayMs": 30000,
+  "ReconnectJitterMs": 500,
+  "UseSecurity": false
+}

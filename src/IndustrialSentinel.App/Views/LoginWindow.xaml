@@ -1,0 +1,55 @@
+﻿<Window x:Class="IndustrialSentinel.App.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Industrial Sentinel - Login"
+        Icon="/Resources/app_icon.png"
+        Width="480"
+        Height="540"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="{StaticResource BrushBackground}"
+        Foreground="{StaticResource BrushText}"
+        FontFamily="{StaticResource FontPrimary}">
+
+    <Border Padding="28" Background="{StaticResource BrushPanel}" CornerRadius="14" BorderBrush="{StaticResource BrushPanelEdge}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                <TextBlock Text="INDUSTRIAL SENTINEL" Style="{StaticResource TitleText}" />
+                <TextBlock Text="Acceso seguro" Style="{StaticResource SubtitleText}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Margin="0,8,0,8">
+                <TextBlock Text="Usuario" Style="{StaticResource LabelText}" />
+                <TextBox x:Name="UsernameBox" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Margin="0,8,0,8">
+                <TextBlock Text="Contrasena" Style="{StaticResource LabelText}" />
+                <PasswordBox x:Name="PasswordBox" Margin="0,6,0,0" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Margin="0,8,0,8" Visibility="{Binding CanRegister, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Text="Confirmar contrasena" Style="{StaticResource LabelText}" />
+                <PasswordBox x:Name="ConfirmBox" Margin="0,6,0,0" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,16,0,0">
+                <Button x:Name="LoginButton" Content="Entrar" Style="{StaticResource PrimaryButton}" Width="120" Click="OnLogin" />
+                <Button x:Name="CreateButton" Content="Crear cuenta" Style="{StaticResource GhostButton}" Width="140" Margin="12,0,0,0" Click="OnCreateAccount"
+                        Visibility="{Binding CanRegister, Converter={StaticResource BoolToVisibility}}" />
+            </StackPanel>
+
+            <TextBlock Grid.Row="5" Text="{Binding Status}" Foreground="{StaticResource BrushWarning}" Margin="0,16,0,0" />
+        </Grid>
+    </Border>
+</Window>

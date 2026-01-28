@@ -1,0 +1,231 @@
+<Window x:Class="IndustrialSentinel.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:IndustrialSentinel.App.Controls"
+        mc:Ignorable="d"
+        Title="Industrial Sentinel"
+        Icon="/Resources/app_icon.png"
+        Width="1180"
+        Height="720"
+        MinWidth="1050"
+        MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BrushBackground}"
+        Foreground="{StaticResource BrushText}"
+        FontFamily="{StaticResource FontPrimary}">
+
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding StartCommand}" />
+        <KeyBinding Modifiers="Control+Shift" Key="S" Command="{Binding StopCommand}" />
+        <KeyBinding Modifiers="Control" Key="L" Command="{Binding ClearLogCommand}" />
+        <KeyBinding Modifiers="Control" Key="H" Command="{Binding ExportHealthCommand}" />
+        <KeyBinding Modifiers="Control" Key="M" Command="{Binding ToggleCompactCommand}" />
+    </Window.InputBindings>
+
+    <Window.Resources>
+        <Style x:Key="CardLocal" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCompact}" Value="True">
+                    <Setter Property="Padding" Value="8" />
+                    <Setter Property="Margin" Value="0,0,0,8" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="RootGridStyle" TargetType="Grid">
+            <Setter Property="Margin" Value="24" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCompact}" Value="True">
+                    <Setter Property="Margin" Value="12" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Style="{StaticResource RootGridStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <TextBlock Text="INDUSTRIAL SENTINEL" Style="{StaticResource TitleText}" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding PipelineState}" Style="{StaticResource SubtitleText}" />
+                    <TextBlock Text=" | " Style="{StaticResource SubtitleText}" />
+                    <TextBlock Text="{Binding SourceStatus}" Style="{StaticResource SubtitleText}" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                <TextBlock Text="{Binding UserLabel}" Style="{StaticResource LabelText}" HorizontalAlignment="Right" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Content="Start" Command="{Binding StartCommand}" Style="{StaticResource PrimaryButton}" />
+                    <Button Content="Stop" Command="{Binding StopCommand}" Style="{StaticResource GhostButton}" Margin="12,0,0,0" />
+                    <Button Content="Report" Command="{Binding ExportHealthCommand}" Style="{StaticResource GhostButton}" Margin="12,0,0,0" />
+                    <Button Content="Compact" Command="{Binding ToggleCompactCommand}" Style="{StaticResource GhostButton}" Margin="12,0,0,0" />
+                    <Button Content="Clear" Command="{Binding ClearLogCommand}" Style="{StaticResource GhostButton}" Margin="12,0,0,0" />
+                    <Button Content="Password" Command="{Binding ChangePasswordCommand}" Style="{StaticResource GhostButton}" Margin="12,0,0,0" />
+                    <Button Content="Admin" Command="{Binding AdminCommand}" Style="{StaticResource GhostButton}" Margin="12,0,0,0"
+                            Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}" />
+                    <Button Content="Logout" Command="{Binding LogoutCommand}" Style="{StaticResource GhostButton}" Margin="12,0,0,0" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,20,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <Border Style="{StaticResource CardLocal}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
+                            <TextBlock Text="RPM" Style="{StaticResource CardTitle}" />
+                            <TextBlock Text="{Binding Rpm, StringFormat={}{0:N0}}" Style="{StaticResource CardValue}" Margin="16,0,0,0" />
+                        </StackPanel>
+                        <controls:RealtimePlotControl
+                            Grid.Row="1"
+                            SeriesBuffer="{Binding SeriesBuffer}"
+                            Metric="Rpm"
+                            MinValue="0"
+                            MaxValue="3600"
+                            LineBrush="{StaticResource BrushAccent}"
+                            FillBrush="{StaticResource BrushAccentSoft}"
+                            BackgroundBrush="{StaticResource BrushPlotBackground}" />
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource CardLocal}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
+                            <TextBlock Text="TEMP" Style="{StaticResource CardTitle}" />
+                            <TextBlock Text="{Binding TemperatureC, StringFormat={}{0:N1} C}" Style="{StaticResource CardValue}" Margin="16,0,0,0" />
+                        </StackPanel>
+                        <controls:RealtimePlotControl
+                            Grid.Row="1"
+                            SeriesBuffer="{Binding SeriesBuffer}"
+                            Metric="Temperature"
+                            MinValue="40"
+                            MaxValue="110"
+                            LineBrush="{StaticResource BrushWarning}"
+                            FillBrush="{StaticResource BrushWarningSoft}"
+                            BackgroundBrush="{StaticResource BrushPlotBackground}" />
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource CardLocal}" Margin="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
+                            <TextBlock Text="VIBRATION" Style="{StaticResource CardTitle}" />
+                            <TextBlock Text="{Binding VibrationMmS, StringFormat={}{0:N2} mm/s}" Style="{StaticResource CardValue}" Margin="16,0,0,0" />
+                        </StackPanel>
+                        <controls:RealtimePlotControl
+                            Grid.Row="1"
+                            SeriesBuffer="{Binding SeriesBuffer}"
+                            Metric="Vibration"
+                            MinValue="0"
+                            MaxValue="10"
+                            LineBrush="{StaticResource BrushCritical}"
+                            FillBrush="{StaticResource BrushCriticalSoft}"
+                            BackgroundBrush="{StaticResource BrushPlotBackground}" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <Grid Grid.Column="1" Margin="16,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource CardLocal}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="ALERTAS CRITICAS" Style="{StaticResource CardTitle}" />
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,8,0,12">
+                            <TextBlock Text="Ultimo muestreo:" Style="{StaticResource LabelText}" />
+                            <TextBlock Text="{Binding LastSampleTime}" Style="{StaticResource LabelValue}" Margin="8,0,0,0" />
+                        </StackPanel>
+
+                        <ListBox Grid.Row="2" ItemsSource="{Binding Alerts}" Style="{StaticResource AlertList}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource AlertItem}">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Message}" Style="{StaticResource AlertTitle}" />
+                                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                <TextBlock Text="{Binding Metric}" Style="{StaticResource AlertMeta}" />
+                                                <TextBlock Text="{Binding Value, StringFormat={}{0:N2}}" Style="{StaticResource AlertMeta}" Margin="8,0,0,0" />
+                                                <TextBlock Text="{Binding Timestamp}" Style="{StaticResource AlertMeta}" Margin="8,0,0,0" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="1" Style="{StaticResource CardLocal}" Margin="0,12,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="TELEMETRY LOG" Style="{StaticResource CardTitle}" />
+                        <ListBox Grid.Row="1" ItemsSource="{Binding TelemetryLog}" Style="{StaticResource AlertList}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Style="{StaticResource LogText}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <Border Grid.Row="2" Style="{StaticResource StatusBar}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding QueueDepthText}" Style="{StaticResource StatusText}" />
+                <TextBlock Text=" | " Style="{StaticResource StatusText}" />
+                <TextBlock Text="{Binding RateText}" Style="{StaticResource StatusText}" />
+                <TextBlock Text=" | " Style="{StaticResource StatusText}" />
+                <TextBlock Text="{Binding DropText}" Style="{StaticResource StatusText}" />
+                <TextBlock Text=" | " Style="{StaticResource StatusText}" />
+                <TextBlock Text="{Binding HealthText}" Style="{StaticResource StatusText}" />
+                <TextBlock Text=" | " Style="{StaticResource StatusText}" />
+                <TextBlock Text="{Binding Notification}" Style="{StaticResource StatusText}" Foreground="{StaticResource BrushWarning}" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
